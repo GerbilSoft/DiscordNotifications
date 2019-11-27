@@ -132,8 +132,9 @@ class DiscordNotificationsCore {
 			self::getDiscordArticleText( $article, true ),
 			$summary == "" ? "" : self::msg( 'discordnotifications-summary' ) . $summary );
 		if ( $wgDiscordIncludeDiffSize ) {
-			$message .= ' (' . self::msg( 'discordnotifications-bytes',
-				$article->getRevision()->getSize() - $article->getRevision()->getPrevious()->getSize() ) . ')';
+			$sizediff = $article->getRevision()->getSize() - $article->getRevision()->getPrevious()->getSize();
+			$sign = ($sizediff > 0 ? '+' : '');
+			$message .= ' (' . $sign . self::msg( 'discordnotifications-bytes', $sizediff ) . ')';
 		}
 		self::pushDiscordNotify( $message, $user, 'article_saved' );
 		return true;
@@ -163,7 +164,9 @@ class DiscordNotificationsCore {
 			self::getDiscordArticleText( $article ),
 			$summary == "" ? "" : self::msg( 'discordnotifications-summary', $summary ) );
 		if ( $wgDiscordIncludeDiffSize ) {
-			$message .= " (" . self::msg( 'discordnotifications-bytes', $article->getRevision()->getSize() ) . ")";
+			$sizediff = $article->getRevision()->getSize();
+			$sign = ($sizediff > 0 ? '+' : '');
+			$message .= ' (' . $sign . self::msg( 'discordnotifications-bytes', $sizediff ) . ')';
 		}
 		self::pushDiscordNotify( $message, $user, 'article_inserted' );
 		return true;
